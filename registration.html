@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>水产品溯源系统 - 登录</title>
+    <title>水产品溯源系统 - 注册</title>
     <style>
         body {
-            background-image: url('login3.png');
+            background-image: url('registration4.png');
             background-repeat: no-repeat;
             background-size: 100%;
             background-attachment: fixed;
@@ -58,8 +58,24 @@
             <label for="phone">手机号:</label>
             <input type="text" id="phone" name="phone" required style="width: 100%;">
             
-            <label for="password">密码:</label>
+            <label for="password">设置密码:</label>
             <input type="password" id="password" name="password" required style="width: 100%;">
+
+            <label for="confirm-password">确认密码:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required style="width: 100%;">
+
+            <p id="error-message" style="color: red; display: none;">密码不匹配，请重新输入。</p>
+
+            <script>
+                document.querySelector('form').addEventListener('submit', function(event) {
+                    var password = document.getElementById('password').value;
+                    var confirmPassword = document.getElementById('confirm-password').value;
+                    if (password !== confirmPassword) {
+                        event.preventDefault();
+                        document.getElementById('error-message').style.display = 'block';
+                    }
+                });
+            </script>
             
             <label for="role">选择角色:</label>
             <select id="role" name="role" required style="width: 100%;">
@@ -70,42 +86,43 @@
             <option value="消费者">消费者</option>
             </select>
             
-            <button type="submit" style="width: 100%; max-width: 300px;">登录</button>
+            <button type="submit" style="width: 100%; max-width: 300px;">注册</button>
         <script>
             document.getElementById('registration-form').addEventListener('submit', function(event) {
                 event.preventDefault();
-                
-                const phone = document.getElementById('phone').value;
-                const password = document.getElementById('password').value;
-                const role = document.getElementById('role').value;
-                
-                fetch('your-backend-url', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ phone, password, role })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('登录成功');
-                        window.open('Information_entry.html', '_blank');
-                    } else if (data.error === 'password') {
-                        alert('密码错误，请重新输入');
-                    } else if (data.error === 'role') {
-                        alert('角色错误，请重新选择');
-                    } else {
-                        alert('未知错误');
+                var phone = document.getElementById('phone').value;
+                var password = document.getElementById('password').value;
+                var confirmPassword = document.getElementById('confirm-password').value;
+                var role = document.getElementById('role').value;
+
+                if (password !== confirmPassword) {
+                    document.getElementById('error-message').style.display = 'block';
+                    return;
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/register', true);
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        window.location.href = 'login.html';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('请求失败，请稍后再试');
-                });
+                };
+                xhr.send(JSON.stringify({
+                    phone: phone,
+                    password: password,
+                    role: role
+                }));
+            });
+        
+            document.getElementById('registration-form').addEventListener('submit', function(event) {
+                var password = document.getElementById('password').value;
+                var confirmPassword = document.getElementById('confirm-password').value;
+                if (password === confirmPassword) {
+                    window.open('login.html', '_blank');
+                }
             });
         </script>
-       
         </form>
     </div>
 </body>
