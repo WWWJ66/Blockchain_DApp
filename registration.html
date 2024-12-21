@@ -105,7 +105,10 @@
                 xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
-                        window.location.href = 'login.html';
+                        alert('注册成功！即将跳转到登陆界面...');
+                        setTimeout(function() {
+                            window.location.href = 'login.html';
+                        }, 1500);
                     }
                 };
                 xhr.send(JSON.stringify({
