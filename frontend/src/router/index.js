@@ -1,14 +1,26 @@
 import HomeView from "../components/HomeView.vue";
 import InputView from "../components/InputView.vue";
-import QueryView from '../components/QueryView.vue'
+import QueryView from '../components/QueryView.vue';
+import Register from '../components/RegisterView.vue';
+import Login from '../components/LoginView.vue';
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         {
-            name: 'home',
             path: '/',
+            name: 'Login',
+            component: Login
+        },
+        {
+            path: '/register',
+            name: 'Register',
+            component: Register
+        },
+        {
+            name: 'home',
+            path: '/home',
             component: HomeView,
             children: [
                 {
@@ -16,7 +28,7 @@ const router = createRouter({
                     meta: {
                         title: '溯源查询',
                     },
-                    path: 'queries',
+                    path: '/queries',
                     component: QueryView,
                 },
                 {
@@ -24,16 +36,11 @@ const router = createRouter({
                     meta: {
                         title: '溯源信息录入',
                     },
-                    path: 'input',
+                    path: '/input',
                     component: InputView,
                 },
             ],
         },
-        // {
-        //     name: 'login',
-        //     path: '/login',
-        //     component: LoginView,
-        // },
     ],
 })
 

@@ -42,8 +42,8 @@
 <script setup>
 import {ref, onMounted} from 'vue';
 import axios from "axios";
-
-const username = "111111";
+import {useUserStore} from "@/store/userStore";
+const username = useUserStore().username; // 获取当前用户名
 
 // 定义搜索查询和搜索结果的响应式变量
 const searchQuery = ref('');
