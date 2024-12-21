@@ -118,15 +118,11 @@
 
 <script setup>
 import { ref } from "vue";
-// import { computed } from "vue";
-// import { useStore } from "vuex";
 import axios from "axios";
 
-// const store = useStore();
-// const name = computed(() => store.getters ? store.getters.name : "default");
-// const userType = computed(() => store.getters ? store.getters.userType : "消费者");
-const name = "ti"
-const userType = "商店"
+import {useUserStore} from "@/store/userStore";
+const name = useUserStore().username; // 获取当前用户名
+const userType = useUserStore().type;
 
 const tracedata = ref({
   tracecode: "",
@@ -181,7 +177,7 @@ const submittracedata = () => {
     });
   }
 
-  switch (userType.value) {
+  switch (userType) {
     case "捕捞者":
       formData.append("arg1", tracedata.value.Fisherman_input.Fi_fishName);
       formData.append("arg2", tracedata.value.Fisherman_input.Fi_origin);

@@ -1,6 +1,9 @@
 <template>
   <div class="container">
     <h1>溯源信息查询</h1>
+    <div style="color: #000; margin-bottom: 30px">
+      当前用户：{{ username }}; 用户角色: {{ userType }}
+    </div>
     <div class="search-bar">
       <input v-model="searchQuery" type="text" placeholder="请输入溯源码进行查询">
       <button @click="doSearch(searchQuery)">搜索</button>
@@ -44,6 +47,7 @@ import {ref, onMounted} from 'vue';
 import axios from "axios";
 import {useUserStore} from "@/store/userStore";
 const username = useUserStore().username; // 获取当前用户名
+const userType = useUserStore().type;
 
 // 定义搜索查询和搜索结果的响应式变量
 const searchQuery = ref('');
@@ -51,9 +55,9 @@ const products = ref([]);
 const details = ref({});
 const searchingCode = ref('');
 
-const doSearch = (code) => {
+const doSearch = async (code) => {
   searchingCode.value = code;
-  getDetails(searchingCode.value);
+  await getDetails(searchingCode.value);
 }
 
 const getProductsList = async () => {
@@ -111,9 +115,9 @@ function convertPropertyNamesToChinese(obj) {
   }
 }
 
-const checkProduct = (product) => {
+const checkProduct = async (product) => {
   searchingCode.value = '';
-  getDetails(product);
+  await getDetails(product);
 }
 
 const getDetails = async (traceCode) => {

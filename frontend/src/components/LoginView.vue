@@ -34,7 +34,7 @@
 import {useUserStore} from '@/store/userStore';
 import {ref} from "vue";
 import { useRouter } from 'vue-router';
-// import axios from "axios";
+import axios from "axios";
 
 const userStore = useUserStore();
 const phone = ref('');
@@ -43,18 +43,18 @@ const role = ref('');
 const router = useRouter();
 
 const handleSubmit = async () => {
-  // const res = await axios.post("localhost:9090/login", {username: phone, password: password})
-  // if (res.data.code === 200) {
+  const res = await axios.post("localhost:9090/login", {username: phone, password: password})
+  if (res.data.code === 200) {
     alert('登录成功');
-    userStore.logIn();
-    userStore.setUsername(phone); // 保存 username 到全局状态
+    userStore.setType(role.value);
+    userStore.setUsername(phone.value); // 保存用户信息到全局状态
     router.push({ name: 'home' })
-  // } else {
-  //   alert('手机号或密码错误，请重新输入');
-  // }
+  } else {
+    alert('手机号或密码错误，请重新输入');
+  }
 };
 const goToRegistration = () => {
-  this.$router.push({name: 'Register'});
+  router.push({name: 'Register'});
 };
 </script>
 
