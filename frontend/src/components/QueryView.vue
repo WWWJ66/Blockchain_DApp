@@ -149,6 +149,7 @@ h1 {
 
 .results-table td, .details-table td {
   padding: 7px;
+  background-color: rgba(204, 226, 255, 0.7);
   border-bottom: 1px solid #ddd;
   justify-content: center;
 }

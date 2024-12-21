@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
     <el-container>
-      <el-aside width="200px" style="background-color: rgba(141,248,252,0.3); height: 100vh" type="primary">
+      <el-aside width="200px" style="background-color: rgba(141,248,252,0.7); height: 100vh" type="primary">
         <el-menu default-active="2" class="el-menu-vertical" style="background-color: rgba(0,0,0,0);">
           <el-menu-item index="1" class="menu"
                         style="color: #270055; font-size: 15px;"
@@ -26,7 +26,8 @@ import {ElContainer, ElAside} from 'element-plus';
 </script>
 
 <style scoped>
-.home-view, el-container, el-aside {
+.home-view{
+  background-image: url("../assets/background.jpg");
   height: 100vh;
 }
 
@@ -36,6 +37,6 @@ menu {
 }
 
 .content {
-  background-color: rgba(141, 248, 252, 0.1);
+  background-color: rgba(141, 248, 252, 0.3);
 }
 </style>
