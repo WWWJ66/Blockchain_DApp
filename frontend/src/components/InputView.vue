@@ -14,7 +14,7 @@
       >
         <!-- 通用溯源码 -->
         <el-form-item
-          v-if="userType !== '捕捞者' && userType !== '消费者'"
+          v-if="userType !== '水产品养殖者' && userType !== '消费者'"
           label="溯源码:"
           style="width: 300px"
         >
@@ -22,78 +22,66 @@
         </el-form-item>
 
         <!-- 捕捞者表单 -->
-        <template v-if="userType === '捕捞者'">
-          <el-form-item label="农产品名称:" style="width: 300px">
-            <el-input v-model="tracedata.Fisherman_input.Fi_fishName" />
+        <template v-if="userType === '水产品养殖者'">
+          <el-form-item label="水产品名称:" style="width: 300px">
+            <el-input v-model="tracedata.Fisher_input.Fi_fishName" />
           </el-form-item>
-          <el-form-item label="产地:" style="width: 300px">
-            <el-input v-model="tracedata.Fisherman_input.Fi_origin" />
+          <el-form-item label="养殖者名称:" style="width: 300px">
+            <el-input v-model="tracedata.Fisher_input.Fi_fisherName" />
           </el-form-item>
-          <el-form-item label="种植时间:" style="width: 300px">
-            <el-input v-model="tracedata.Fisherman_input.Fi_plantTime" />
+          <el-form-item label="捕捞时间:" style="width: 300px">
+            <el-input v-model="tracedata.Fisher_input.Fi_fishedTime" />
           </el-form-item>
-          <el-form-item label="采摘时间:" style="width: 300px">
-            <el-input v-model="tracedata.Fisherman_input.Fi_catchingTime" />
-          </el-form-item>
-          <el-form-item label="捕捞者名称:" style="width: 300px">
-            <el-input v-model="tracedata.Fisherman_input.Fi_FishermanName" />
+          <el-form-item label="捕捞海域:" style="width: 300px">
+            <el-input v-model="tracedata.Fisher_input.Fi_fishedArea" />
           </el-form-item>
         </template>
 
-        <!-- 加工厂表单 -->
-        <template v-if="userType === '加工厂'">
+        <!-- 工厂表单 -->
+        <template v-if="userType === '工厂'">
           <el-form-item label="商品名称:" style="width: 300px">
             <el-input v-model="tracedata.Factory_input.Fac_productName" />
           </el-form-item>
-          <el-form-item label="生产批次:" style="width: 300px">
-            <el-input v-model="tracedata.Factory_input.Fac_productionbatch" />
-          </el-form-item>
-          <el-form-item label="生产时间:" style="width: 300px">
-            <el-input v-model="tracedata.Factory_input.Fac_productionTime" />
-          </el-form-item>
-          <el-form-item label="加工厂名称与厂址:" style="width: 300px">
+          <el-form-item label="工厂名称:" style="width: 300px">
             <el-input v-model="tracedata.Factory_input.Fac_factoryName" />
           </el-form-item>
-          <el-form-item label="加工厂电话:" style="width: 300px">
-            <el-input v-model="tracedata.Factory_input.Fac_contactNumber" />
+          <el-form-item label="加工时间:" style="width: 300px">
+            <el-input v-model="tracedata.Factory_input.Fac_processTime" />
+          </el-form-item>
+          <el-form-item label="工厂厂址:" style="width: 300px">
+            <el-input v-model="tracedata.Factory_input.Fac_factoryAdress" />
           </el-form-item>
         </template>
 
         <!-- 物流公司表单 -->
         <template v-if="userType === '物流公司'">
           <el-form-item label="公司名称:" style="width: 300px">
-            <el-input v-model="tracedata.Company_input.Dr_name" />
-          </el-form-item>
-          <el-form-item label="公司地址:" style="width: 300px">
-            <el-input v-model="tracedata.Company_input.Dr_age" />
+            <el-input v-model="tracedata.Driver_input.Dr_name" />
           </el-form-item>
           <el-form-item label="联系电话:" style="width: 300px">
-            <el-input v-model="tracedata.Company_input.Dr_phone" />
+            <el-input v-model="tracedata.Driver_input.Dr_phone" />
           </el-form-item>
-          <el-form-item label="运输车牌号:" style="width: 300px">
-            <el-input v-model="tracedata.Company_input.Dr_carNumber" />
+          <el-form-item label="运输时间:" style="width: 300px">
+            <el-input v-model="tracedata.Driver_input.Dr_transportTime" />
           </el-form-item>
-          <el-form-item label="运输记录:" style="width: 300px">
-            <el-input v-model="tracedata.Company_input.Dr_transport" />
+          <el-form-item label="运输单号:" style="width: 300px">
+            <el-input v-model="tracedata.Driver_input.Dr_id" />
           </el-form-item>
         </template>
 
         <!-- 商店表单 -->
         <template v-if="userType === '商店'">
-          <el-form-item label="存入时间:" style="width: 300px">
-            <el-input v-model="tracedata.Shop_input.Sh_storeTime" />
-          </el-form-item>
-          <el-form-item label="销售时间:" style="width: 300px">
-            <el-input v-model="tracedata.Shop_input.Sh_sellTime" />
-          </el-form-item>
           <el-form-item label="商店名称:" style="width: 300px">
             <el-input v-model="tracedata.Shop_input.Sh_shopName" />
           </el-form-item>
-          <el-form-item label="商店位置:" style="width: 300px">
+          <el-form-item label="商店地址:" style="width: 300px">
             <el-input v-model="tracedata.Shop_input.Sh_shopAddress" />
           </el-form-item>
-          <el-form-item label="商店电话:" style="width: 300px">
-            <el-input v-model="tracedata.Shop_input.Sh_shopPhone" />
+          <el-form-item label="存入时间:" style="width: 300px">
+            <el-input v-model="tracedata.Shop_input.Sh_storageTime" />
+          </el-form-item>
+          <el-form-item label="销售时间:" style="width: 300px">
+            <el-input v-model="tracedata.Shop_input.Sh_sellTime" />
           </el-form-item>
         </template>
       </el-form>
@@ -121,118 +109,87 @@ import { ref } from "vue";
 import axios from "axios";
 
 import {useUserStore} from "@/store/userStore";
-const name = useUserStore().username; // 获取当前用户名
-const userType = useUserStore().type;
-
+const name = useUserStore().username;
+const userType = useUserStore().userType;
+const token = useUserStore().token;
 const tracedata = ref({
   tracecode: "",
-  Fisherman_input: {
+  Fisher_input: {
     Fi_fishName: "",
-    Fi_origin: "",
-    Fi_plantTime: "",
-    Fi_catchingTime: "",
-    Fi_FishermanName: "",
+    Fi_fisherName: "",
+    Fi_fishedTime: "",
+    Fi_fishedArea: "",
   },
   Factory_input: {
     Fac_productName: "",
-    Fac_productionbatch: "",
-    Fac_productionTime: "",
     Fac_factoryName: "",
-    Fac_contactNumber: "",
+    Fac_processTime: "",
+    Fac_factoryAddress: "",
   },
-  Company_input: {
+  Driver_input: {
     Dr_name: "",
-    Dr_age: "",
     Dr_phone: "",
-    Dr_carNumber: "",
-    Dr_transport: "",
+    Dr_transportTime: "",
+    Dr_id: "",
   },
   Shop_input: {
-    Sh_storeTime: "",
-    Sh_sellTime: "",
     Sh_shopName: "",
     Sh_shopAddress: "",
-    Sh_shopPhone: "",
+    Sh_storageTime: "",
+    Sh_sellTime: ""
   },
 });
 
 const submittracedata = () => {
-  console.log(tracedata.value);
-  const loading = window.$loading({
-    lock: true,
-    text: "数据上链中...",
-    spinner: "el-icon-loading",
-    background: "rgba(0, 0, 0, 0.7)",
-  });
-
   const formData = new FormData();
   formData.append("username", name);
   formData.append("tracecode", tracedata.value.tracecode);
 
   function uplink(data) {
-    return axios.post("http://localhost:9090/uplink", data, {
+    return axios.post("http://192.168.133.131:9090/uplink", data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+          'Authorization': token
       },
     });
   }
 
   switch (userType) {
-    case "捕捞者":
-      formData.append("arg1", tracedata.value.Fisherman_input.Fi_fishName);
-      formData.append("arg2", tracedata.value.Fisherman_input.Fi_origin);
-      formData.append("arg3", tracedata.value.Fisherman_input.Fi_plantTime);
-      formData.append("arg4", tracedata.value.Fisherman_input.Fi_catchingTime);
-      formData.append("arg5", tracedata.value.Fisherman_input.Fi_FishermanName);
+    case "水产品养殖者":
+      formData.append("arg1", tracedata.value.Fisher_input.Fi_fishName);
+      formData.append("arg2", tracedata.value.Fisher_input.Fi_fisherName);
+      formData.append("arg3", tracedata.value.Fisher_input.Fi_fishedTime);
+      formData.append("arg4", tracedata.value.Fisher_input.Fi_fishedArea);
       break;
-    case "加工厂":
+    case "工厂":
       formData.append("arg1", tracedata.value.Factory_input.Fac_productName);
-      formData.append(
-        "arg2",
-        tracedata.value.Factory_input.Fac_productionbatch
-      );
-      formData.append("arg3", tracedata.value.Factory_input.Fac_productionTime);
-      formData.append("arg4", tracedata.value.Factory_input.Fac_factoryName);
-      formData.append("arg5", tracedata.value.Factory_input.Fac_contactNumber);
+      formData.append("arg2", tracedata.value.Factory_input.Fac_factoryName);
+      formData.append("arg3", tracedata.value.Factory_input.Fac_processTime);
+      formData.append("arg4", tracedata.value.Factory_input.Fac_factoryAddress);
       break;
     case "物流公司":
-      formData.append("arg1", tracedata.value.Company_input.Dr_name);
-      formData.append("arg2", tracedata.value.Company_input.Dr_age);
-      formData.append("arg3", tracedata.value.Company_input.Dr_phone);
-      formData.append("arg4", tracedata.value.Company_input.Dr_carNumber);
-      formData.append("arg5", tracedata.value.Company_input.Dr_transport);
+      formData.append("arg1", tracedata.value.Driver_input.Dr_name);
+      formData.append("arg2", tracedata.value.Driver_input.Dr_phone);
+      formData.append("arg3", tracedata.value.Driver_input.Dr_transportTime);
+      formData.append("arg4", tracedata.value.Driver_input.Dr_id);
       break;
     case "商店":
-      formData.append("arg1", tracedata.value.Shop_input.Sh_storeTime);
-      formData.append("arg2", tracedata.value.Shop_input.Sh_sellTime);
-      formData.append("arg3", tracedata.value.Shop_input.Sh_shopName);
-      formData.append("arg4", tracedata.value.Shop_input.Sh_shopAddress);
-      formData.append("arg5", tracedata.value.Shop_input.Sh_shopPhone);
+      formData.append("arg1", tracedata.value.Shop_input.Sh_shopName);
+      formData.append("arg2", tracedata.value.Shop_input.Sh_shopAddress);
+      formData.append("arg3", tracedata.value.Shop_input.Sh_storageTime);
+      formData.append("arg4", tracedata.value.Shop_input.Sh_sellTime);
       break;
   }
 
   uplink(formData)
     .then((res) => {
-      if (res.code === 200) {
-        loading.close();
-        window.$message({
-          message:
-            "上链成功，交易ID：" +
-            res.txid +
-            "\n溯源码：" +
-            res.tracecode,
-          type: "success",
-        });
+      if (res.data.code === 200) {
+        alert("上链成功，交易ID：" + res.data.txid + "\n溯源码：" + res.data.tracecode);
       } else {
-        loading.close();
-        window.$message({
-          message: "上链失败",
-          type: "error",
-        });
+        alert("上链失败");
+        console.log(res.data);
       }
     })
     .catch((err) => {
-      loading.close();
       console.error(err);
     });
 };

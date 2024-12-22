@@ -24,20 +24,66 @@
       </tr>
       </tbody>
     </table>
-    <div v-if="Object.keys(details).length">
-      <div v-if="searchingCode !== ''">
-        <h4>搜索{{ searchingCode }}的结果：</h4>
-        <button @click="addToMy(searchingCode)">添加至我的</button>
-      </div>
-      <div class="result-info">
-        <div class="info" v-for="(detail, infoType) in details" :key="infoType">
-          <h3>{{ infoType }}</h3>
-          <div v-for="(value, key) in detail" :key="key">
-            {{ key }}: {{ value }}
+    
+    <div v-if="detailsVisible" class="overlay" @click="closeDetails">
+      <div class="result-info-box" @click.stop>
+        <button class="close-btn" @click="closeDetails">关闭</button>
+        <div class="result-info">
+          <!-- 基本信息 -->
+          <div class="info-box">
+            <h3>基本信息</h3>
+            <p><strong>水产品名称:</strong> {{ details.fisher_input.fi_fishName }}</p>
+            <p><strong>水产品养殖者:</strong> {{ details.fisher_input.fi_fisherName }}</p>
+            <p><strong>捕捞时间:</strong> {{ details.fisher_input.fi_fishedTime }}</p>
+            <p><strong>捕捞区域:</strong> {{ details.fisher_input.fi_fishedArea }}</p>
+            <div class="transaction-info">
+              <p>交易ID: {{ details.fisher_input.fi_txid }}</p>
+              <p>交易时间: {{ details.fisher_input.fi_timestamp }}</p>
+            </div>
+          </div>
+    
+          <!-- 加工信息 -->
+          <div class="info-box">
+            <h3>加工信息</h3>
+            <p><strong>产品名称:</strong> {{ details.factory_input.fac_productName || '暂无数据' }}</p>
+            <p><strong>工厂名称:</strong> {{ details.factory_input.fac_factoryName || '暂无数据' }}</p>
+            <p><strong>加工时间:</strong> {{ details.factory_input.fac_processTime || '暂无数据' }}</p>
+            <p><strong>工厂地址:</strong> {{ details.factory_input.fac_factoryAddress || '暂无数据' }}</p>
+            <div class="transaction-info">
+              <p>交易ID: {{ details.factory_input.fac_txid || '暂无数据' }}</p>
+              <p>交易时间: {{ details.factory_input.fac_timestamp || '暂无数据' }}</p>
+            </div>
+          </div>
+    
+          <!-- 运输信息 -->
+          <div class="info-box">
+            <h3>运输信息</h3>
+            <p><strong>公司名称:</strong> {{ details.driver_input.dr_name || '暂无数据' }}</p>
+            <p><strong>联系电话:</strong> {{ details.driver_input.dr_phone || '暂无数据' }}</p>
+            <p><strong>运输时间:</strong> {{ details.driver_input.dr_transportTime || '暂无数据' }}</p>
+            <p><strong>运输单号:</strong> {{ details.driver_input.dr_id || '暂无数据' }}</p>
+            <div class="transaction-info">
+              <p>交易ID: {{ details.driver_input.dr_txid || '暂无数据' }}</p>
+              <p>交易时间: {{ details.driver_input.dr_timestamp || '暂无数据' }}</p>
+            </div>
+          </div>
+    
+          <!-- 商店信息 -->
+          <div class="info-box">
+            <h3>商店信息</h3>
+            <p><strong>商店名称:</strong> {{ details.shop_input.sh_shopName || '暂无数据' }}</p>
+            <p><strong>商店地址:</strong> {{ details.shop_input.sh_shopAddress || '暂无数据' }}</p>
+            <p><strong>上架时间:</strong> {{ details.shop_input.sh_storageTime || '暂无数据' }}</p>
+            <p><strong>售出时间:</strong> {{ details.shop_input.sh_sellTime || '暂无数据' }}</p>
+            <div class="transaction-info">
+              <p>交易ID: {{ details.shop_input.sh_txid || '暂无数据' }}</p>
+              <p>交易时间: {{ details.shop_input.sh_timestamp || '暂无数据' }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="no-result-info" v-else>暂无查询结果</div>
   </div>
 </template>
@@ -46,8 +92,10 @@
 import {ref, onMounted} from 'vue';
 import axios from "axios";
 import {useUserStore} from "@/store/userStore";
-const username = useUserStore().username; // 获取当前用户名
-const userType = useUserStore().type;
+const username = useUserStore().username;
+const userType = useUserStore().userType;
+const token = useUserStore().token;
+const detailsVisible = ref(false);
 
 // 定义搜索查询和搜索结果的响应式变量
 const searchQuery = ref('');
@@ -62,57 +110,16 @@ const doSearch = async (code) => {
 
 const getProductsList = async () => {
   console.log(`查询 ${username} 的产品列表`);
-  const productlistResponse = await axios.post("localhost:9090/getProductList", {username: username});
-  products.value = productlistResponse.data;
-  // products.value = [{"tracecode": "1",}, {"tracecode": "2",}, {"tracecode": "3",}];
-}
-
-const addToMy = async (traceCode) => {
-  await axios.post("localhost:9090/addProduct", {username: username, tracecode: traceCode});
-  console.log(`添加产品: ${traceCode}`);
-  await getProductsList();
-};
-
-// 定义属性名与中文名的映射关系
-const propertyNameToChinese = {
-  "basicInfo": "基本信息",
-  "factoryInfo": "工厂信息",
-  "transportInfo": "运输信息",
-  "shopInfo": "商店信息",
-  "name": "产品名",
-  "fisherName": "渔民名",
-  "fishedTime": "捕捞时间",
-  "fishedArea": "捕捞区域",
-  "tradeId": "交易ID",
-  "tradeTime": "交易时间",
-  "factoryName": "加工厂名",
-  "processTime": "加工时间",
-  "factoryAddress": "加工厂地址",
-  "driverName": "司机名",
-  "transportTime": "运输时间",
-  "destination": "目的地",
-  "shopName": "商店名",
-  "storageTime": "入库时间",
-  "sellTime": "销售时间"
-};
-
-// 定义一个函数来转换属性名
-function convertPropertyNamesToChinese(obj) {
-  // 遍历对象的每个键值对
-  for (let key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      // 如果值是一个对象，则递归调用函数
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        obj[propertyNameToChinese[key]] = obj[key];
-        delete obj[key];
-        convertPropertyNamesToChinese(obj[propertyNameToChinese[key]]);
-      } else if (propertyNameToChinese[key] !== undefined) {
-        // 如果键在映射关系中，则替换键名
-        obj[propertyNameToChinese[key]] = obj[key];
-        delete obj[key];
-      }
-    }
-  }
+  const productlistResponse = 
+    await axios.post("http://192.168.133.131:9090/getFishList", 
+      {},
+      { headers: {
+        'Authorization': token
+      },}
+    );
+  products.value = JSON.parse(productlistResponse.data.data);
+  console.log(products.value);
+  console.log(products.value.length);
 }
 
 const checkProduct = async (product) => {
@@ -121,46 +128,16 @@ const checkProduct = async (product) => {
 }
 
 const getDetails = async (traceCode) => {
-  const res = await axios.post("localhost:9090/getProductInfo", {tracecode: traceCode});
-  details.value = res.data;
-  console.log(`展示产品详情: ${traceCode}`);
-  // details.value = {
-  //   "basicInfo": {
-  //     "name": "黄鱼",
-  //     "fisherName": "渔民A",
-  //     "fishedTime": "2024.1.1",
-  //     "fishedArea": "黄海",
-  //     "tradeId": "",
-  //     "tradeTime": ''
-  //   },
-  //   "factoryInfo": {
-  //     "name": "黄鱼酥",
-  //     "factoryName": "加工厂A",
-  //     "processTime": "2024.1.2",
-  //     "factoryAddress": "A市B区",
-  //     "tradeId": "",
-  //     "tradeTime": ''
-  //   },
-  //   "transportInfo": {
-  //     "name": "黄鱼酥",
-  //     "driverName": "司机A",
-  //     "transportTime": "2024.1.3",
-  //     "destination": "B市A区",
-  //     "tradeId": "",
-  //     "tradeTime": ''
-  //   },
-  //   "shopInfo": {
-  //     "name": "黄鱼酥",
-  //     "shopName": "商店A",
-  //     "storageTime": "2024.1.4",
-  //     "sellTime": "2024.1.4",
-  //     "tradeId": "",
-  //     "tradeTime": ''
-  //   }
-  //
-  // };
-  convertPropertyNamesToChinese(details.value);  // 使用函数转换属性名
+  var formData = new FormData()
+  formData.append('tracecode',traceCode)
+  const res = await axios.post("http://192.168.133.131:9090/getFishInfo",formData);
+  details.value = JSON.parse(res.data.data);
   console.log(details.value);
+  detailsVisible.value = true;  // 显示弹窗
+};
+
+const closeDetails = () => {
+  detailsVisible.value = false;  // 关闭弹窗
 };
 
 onMounted(async () => {
@@ -257,12 +234,11 @@ h1 {
 }
 
 .result-info {
-  margin-top: 20px;
-  display: flex; /* 添加此行 */
-  flex-wrap: wrap; /* 添加此行 */
-  gap: 10px; /* 添加此行 */
+  display: flex;
+  gap: 50px; /* 框之间的间距 */
+  justify-content: center; /* 均匀分布 */
+  align-items: flex-start; /* 元素顶部对齐 */
 }
-
 .info {
   background-color: #ffffff;
   padding: 20px;
@@ -279,5 +255,74 @@ h1 {
 
 h3 {
   color: #5eaaff;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.result-info-box {
+  background: white;
+  padding: 20px;
+  width: 90%; /* 调整宽度使弹窗更加狭长 */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow-y: auto;
+  max-height: 80vh; /* 允许滚动 */
+} 
+
+.info-box {
+  background-color: #f9f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1 1 15%; /* 每个框占据 22% 宽度，自动分配空间 */
+  max-width: 15%; /* 保证框不超过最大宽度 */
+  min-width: 100px; /* 设置最小宽度，避免在屏幕较小时过小 */
+}
+.info-box:hover {
+  transform: translateY(-5px); /* 悬浮时上移效果 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.info-box h3 {
+  color: #5eaaff;
+}
+
+
+.info-box p {
+  margin: 8px 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 16px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.transaction-info {
+  display: none;
+  background-color: #f0f8ff;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -3,10 +3,10 @@
         <h1>水产品养殖溯源系统</h1>
         <div class="container" style="width: 33.33%; margin: 0 auto; text-align: center;">
             <form @submit.prevent="handleSubmit" id="registration-form" style="text-align: left; max-width: 300px; margin: 0 auto;">
-                <label for="phone">手机号:</label>
-                <input type="text" id="phone" v-model="phone" required style="width: 100%;">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" v-model="username" required style="width: 100%;">
 
-                <label for="password">设置密码:</label>
+                <label for="password">输入密码:</label>
                 <input type="password" id="password" v-model="password" required style="width: 100%;">
 
                 <label for="confirm-password">确认密码:</label>
@@ -14,11 +14,11 @@
 
                 <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
 
-                <label for="role">选择角色:</label>
-                <select id="role" v-model="role" required style="width: 100%;">
-                    <option value="水产品养殖户">水产品养殖户</option>
+                <label for="userType">选择角色:</label>
+                <select id="userType" v-model="userType" required style="width: 100%;">
+                    <option value="水产品养殖者">水产品养殖者</option>
                     <option value="工厂">工厂</option>
-                    <option value="运输司机">运输司机</option>
+                    <option value="物流公司">物流公司</option>
                     <option value="商店">商店</option>
                     <option value="消费者">消费者</option>
                 </select>
@@ -30,13 +30,15 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     data() {
         return {
-            phone: '',
+            username: '',
             password: '',
             confirmPassword: '',
-            role: '',
+            usetType: '',
             errorMessage: ''
         };
     },
@@ -47,16 +49,28 @@ export default {
                 return;
             }
 
-            // const payload = {
-            //     phone: this.phone,
-            //     password: this.password,
-            //     role: this.role
-            // };
+            const formData = new FormData();
+            formData.append("username", this.username.trim());
+            formData.append("password", this.password);
+            formData.append("userType", this.userType);
 
-            alert('注册成功！即将跳转到登陆界面...');
-            setTimeout(() => {
-                this.$router.push({name: 'Login'});
-            }, 1500);
+
+            axios.post("http://192.168.133.131:9090/register", formData)
+                .then((response) => {
+                    if (response.data.code === 200) {
+                        alert('注册成功！即将跳转到登陆界面...');
+                        setTimeout(() => {
+                            this.$router.push({ name: 'Login' });
+                        }, 1500);
+                    } else {
+                        alert(response.data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error("发生错误：", error);
+                    this.errorMessage = '注册失败，请稍后再试。';
+                });
+            
         }
     }
 };

@@ -3,20 +3,11 @@
     <h1>水产品养殖溯源系统</h1>
     <div class="container" style="width: 33.33%; margin: 0 auto; text-align: center;">
       <form @submit.prevent="handleSubmit" style="text-align: left; max-width: 300px; margin: 0 auto;">
-        <label for="phone">手机号:</label>
-        <input type="text" v-model="phone" id="phone" required style="width: 100%;">
+        <label for="username">用户名:</label>
+        <input type="text" v-model="username" id="username" required style="width: 100%;">
 
         <label for="password">密码:</label>
         <input type="password" v-model="password" id="password" required style="width: 100%;">
-
-        <label for="role">选择角色:</label>
-        <select v-model="role" id="role" required style="width: 100%;">
-          <option value="水产品养殖户">水产品养殖户</option>
-          <option value="工厂">工厂</option>
-          <option value="运输司机">运输司机</option>
-          <option value="商店">商店</option>
-          <option value="消费者">消费者</option>
-        </select>
 
         <button type="submit" style="width: 100%; max-width: 300px;">登录</button>
         <div style="text-align: center; margin-top: 20px;">
@@ -37,22 +28,53 @@ import { useRouter } from 'vue-router';
 import axios from "axios";
 
 const userStore = useUserStore();
-const phone = ref('');
+const username = ref('');
 const password = ref('');
-const role = ref('');
 const router = useRouter();
 
 const handleSubmit = async () => {
-  const res = await axios.post("localhost:9090/login", {username: phone, password: password})
-  if (res.data.code === 200) {
-    alert('登录成功');
-    userStore.setType(role.value);
-    userStore.setUsername(phone.value); // 保存用户信息到全局状态
-    router.push({ name: 'home' })
-  } else {
-    alert('手机号或密码错误，请重新输入');
+  try {
+    const formData = new FormData();
+    formData.append("username", username.value.trim());
+    formData.append("password", password.value);
+
+    const res = await axios.post("http://192.168.133.131:9090/login", formData)
+    if (res.data.code === 200) {
+      alert('登录成功');
+      userStore.setUsername(username.value);
+      userStore.setToken(res.data.jwt);
+      setUserType();
+      router.push({ name: 'home' })
+    } else {
+      alert('用户名或密码错误，请重新输入');
+    }
+  } catch(error) {
+    console.error("登录请求失败：", error);
+    alert('登录失败，请稍后再试');
   }
 };
+
+const setUserType = async () => {
+  try {
+    const res = await axios.post(
+      "http://192.168.133.131:9090/getInfo", 
+      {},
+      {
+        headers: {
+          'Authorization': userStore.token
+        }
+      }
+    );
+    if (res.data.code === 200) {
+      userStore.setUserType(res.data.userType);
+    } else {
+      console.log(res.data);
+    }
+  } catch(error) {
+    console.error("获取用户类型请求失败：", error);
+  }
+}
+
 const goToRegistration = () => {
   router.push({name: 'Register'});
 };
