@@ -11,6 +11,10 @@
                         style="color: #270055; font-size: 15px;"
                         @click="$router.push('/input')">溯源信息录入
           </el-menu-item>
+          <el-menu-item index="2" class="menu"
+                        style="color: #270055; font-size: 15px;"
+                        @click="handleClick">区块链信息
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container class="content">
@@ -23,6 +27,11 @@
 <script setup>
 import {RouterView} from 'vue-router';
 import {ElContainer, ElAside} from 'element-plus';
+
+const  handleClick = () => {
+  window.location.href = 'http://192.168.133.131:8080';
+};
+
 </script>
 
 <style scoped>

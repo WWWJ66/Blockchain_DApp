@@ -39,6 +39,14 @@ const router = createRouter({
                     path: '/input',
                     component: InputView,
                 },
+                {
+                    name: 'blockchain',
+                    meta: {
+                        title: '区块链网络',
+                    },
+                    path: 'http://192.168.133.131:8080',
+                    component: InputView,
+                }
             ],
         },
     ],
