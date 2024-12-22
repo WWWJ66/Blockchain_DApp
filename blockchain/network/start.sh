@@ -30,5 +30,5 @@ done
 cp -r organizations explorer/
 
 # 启动区块链浏览器
-docker compose -f explorer/docker-compose.yaml up -d
+docker-compose -f explorer/docker-compose.yaml up -d
 
